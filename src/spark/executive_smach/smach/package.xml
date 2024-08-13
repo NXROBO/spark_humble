@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>smach</name>
+  <version>2.0.1</version>
+  <description>
+    SMACH is a task-level architecture for rapidly creating complex robot
+    behavior. At its core, SMACH is a ROS-independent Python library to build
+    hierarchical state machines. SMACH is a new library that takes advantage of
+    very old concepts in order to quickly create robust robot behavior with
+    maintainable and modular code.
+  </description>
+
+  <maintainer email="gm130s@gmail.com">Isaac I. Y. Saito</maintainer>
+  <license>BSD</license>
+
+  <author>Jonathan Bohren</author>
+  <author>Charles Lesire</author>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+    <rosdoc config="rosdoc.yaml"/>
+  </export>
+</package>

@@ -1,0 +1,8 @@
+<!--启动 berxel_camera -->
+<launch>
+	<arg name="dp_rgist" default="false"/>
+	<include file="$(find berxel_camera)/launch/berxelrebot_camera_iHawk100_config.launch" >
+
+	</include>
+</launch>
+
