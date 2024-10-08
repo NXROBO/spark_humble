@@ -1,0 +1,48 @@
+launch:
+
+- arg:
+    name: "device"
+    default: ""
+
+- arg:
+    name: "model"
+    default: "en-us"
+
+- arg:
+    name: "grammar"
+    default: ""
+
+- arg:
+    name: "samplerate"
+    default: "0"
+
+- arg:
+    name: "result"
+    default: "result"
+
+- arg:
+    name: "ns"
+    default: "/stt"
+
+- node:
+    pkg: "voskros"
+    exec: "vosk"
+    name: "vosk"
+    namespace: "$(var ns)"
+    param:
+    -
+      name: "device"
+      value: "$(var device)"
+    -
+      name: "model"
+      value: "$(var model)"
+    - 
+      name: "grammar"
+      value: "$(var grammar)"
+    -
+      name: "samplerate"
+      value: $(var samplerate)
+    remap:
+    -
+      from: "result"
+      to: "$(var result)"

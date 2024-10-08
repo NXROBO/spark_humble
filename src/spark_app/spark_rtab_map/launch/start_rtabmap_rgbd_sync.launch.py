@@ -24,7 +24,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 import launch_ros.actions
 from launch_ros.actions import Node
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition,UnlessCondition
 from launch.actions import TimerAction
 
 def generate_launch_description():
@@ -44,9 +44,13 @@ def generate_launch_description():
     camera_type_tel = LaunchConfiguration('camera_type_tel')
     lidar_type_tel = LaunchConfiguration('lidar_type_tel')   
     dp_rgist = LaunchConfiguration('dp_rgist')   
-    start_bringup_rviz = LaunchConfiguration('start_bringup_rviz')   
+    rviz_config = LaunchConfiguration('rviz_config')   
     start_slam_rviz = LaunchConfiguration('start_slam_rviz')   
+    start_bringup_rviz = LaunchConfiguration('start_bringup_rviz')   
+
     localization = LaunchConfiguration('localization')
+
+
 
     rviz_config_dir = os.path.join(get_package_share_directory('spark_rtab_map'),
                                    'rviz', 'spark_rtabmap.rviz')
@@ -69,7 +73,6 @@ def generate_launch_description():
     declare_arm_type_tel = DeclareLaunchArgument(
         'arm_type_tel', 
         default_value='uarm',
-        choices=['uarm', 'sagittarius_arm'],
         description='arm name')
     declare_start_base = DeclareLaunchArgument(
         'start_base', 
@@ -101,17 +104,23 @@ def generate_launch_description():
         default_value='true',
         choices=['true', 'false'],
         description='Whether to run dp_rgist')
-    declare_start_bringup_rviz = DeclareLaunchArgument(
-        'start_bringup_rviz', 
-        default_value='false',
-        choices=['true', 'false'],
-        description='Whether to start_bringup_rviz')    
 
     declare_start_slam_rviz = DeclareLaunchArgument(
         'start_slam_rviz', 
         default_value='true',
         choices=['true', 'false'],
         description='Whether to start_slam_rviz')       
+    
+    declare_rviz_config = DeclareLaunchArgument(# -----------修改---------------
+        'rviz_config', 
+        default_value='spark_base.rviz',
+        description='rviz_config')    
+    declare_start_bringup_rviz = DeclareLaunchArgument(
+        'start_bringup_rviz', 
+        default_value='false',
+        choices=['true', 'false'],
+        description='Whether to start_bringup_rviz')    
+
     # Specify the group
     driver_bringup_group = GroupAction([
         IncludeLaunchDescription(
@@ -126,14 +135,15 @@ def generate_launch_description():
                               'camera_type_tel' : camera_type_tel,
                               'lidar_type_tel': lidar_type_tel,
 							  'dp_rgist': dp_rgist,
-                              'start_bringup_rviz' : start_bringup_rviz,}.items()),
+                              'start_bringup_rviz' : start_bringup_rviz,
+                              'rviz_config' : rviz_config, # -----------修改---------------
+                              }.items()),
 
     ])
     map_nav_group = GroupAction([
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(spark_rtab_map_dir, 'launch',
-            #                                           'spark_rtabmap_rgbd.launch.py')),
                                                        'spark_rtabmap_rgbd_sync.launch.py')),
             launch_arguments={'localization': localization,}.items()
         ),
@@ -158,7 +168,7 @@ def generate_launch_description():
         arguments=['-d', rviz_config_dir],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen',
-        condition=IfCondition(start_slam_rviz),
+        condition=UnlessCondition(enable_arm_tel),
         )
 
     spark_delay_map_nav_action = TimerAction(period=5.0, actions=[map_nav_group])
@@ -176,9 +186,10 @@ def generate_launch_description():
     ld.add_action(declare_camera_type_tel)
     ld.add_action(declare_lidar_type_tel)
     ld.add_action(declare_dp_rgist)
-    ld.add_action(declare_start_bringup_rviz)
     ld.add_action(declare_start_slam_rviz)
     ld.add_action(declare_localization)
+    ld.add_action(declare_rviz_config)
+    ld.add_action(declare_start_bringup_rviz)
 
     ld.add_action(driver_bringup_group)
     ld.add_action(spark_teleop_node)

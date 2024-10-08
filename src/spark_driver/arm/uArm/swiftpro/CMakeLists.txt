@@ -79,13 +79,11 @@ rosidl_target_interfaces(swiftpro_write_node
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 
-install(
 
-)
-install(
-  DIRECTORY include/
-  DESTINATION include
-)
+# install(
+#   DIRECTORY include/
+#   DESTINATION include
+# )
 install(TARGETS  
   swiftpro_write_node  
   swiftpro_moveit_node

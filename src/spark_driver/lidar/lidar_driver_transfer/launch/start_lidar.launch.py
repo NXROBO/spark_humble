@@ -18,7 +18,6 @@
 
 
 import os
-
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
@@ -28,6 +27,7 @@ from launch.conditions import IfCondition, LaunchConfigurationEquals
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node, PushRosNamespace
+from colorama import init, Fore, Style  
 
 #雷达列表字典
 lidar_type_dict = {"10c4:ea60": ["ydlidar_g2","ydlidar_g4","ydlidar_g6"], "USB_key": "lidar_type"}
@@ -52,19 +52,18 @@ def get_lidar_type():
     lidar_c_name = get_lidar_configure()
     for i in lidar_type_dict:
         cmd = "lsusb -d " + i
-        print(cmd)
+        # print(cmd)
         result = execCmd(cmd)
         if len(result) !=0:
             if isinstance(lidar_type_dict[i],str):
                 if(lidar_type_dict[i] == lidar_c_name):
-                    print("check lidar is ",lidar_type_dict[i])
+                    print(Fore.YELLOW + "lidar is " + Style.RESET_ALL + Fore.RED + lidar_type_dict[i] + Style.RESET_ALL)  #
                     return lidar_c_name
             elif isinstance(lidar_type_dict[i],list): 
                 if lidar_c_name in (lidar_type_dict[i]):
-                    print("check lidar in list is ",lidar_c_name)
+                    print(Fore.YELLOW + "lidar is " + Style.RESET_ALL + Fore.GREEN + lidar_c_name + Style.RESET_ALL)  #
                     return lidar_c_name
-
-    print("can not find lidar, set ydlidar_g6 as default!")
+    print(Fore.RED + "ERROR: can not find lidar,set ydlidar_g6 as default!" + Style.RESET_ALL)
     return "ydlidar_g6"    
 
 def generate_launch_description():
@@ -76,7 +75,7 @@ def generate_launch_description():
     # Create the launch configuration variables
     lidar_type_tel = LaunchConfiguration('lidar_type_tel')
 
-    start_lidar_rviz = LaunchConfiguration('start_lidar_rviz')   
+    start_lidar_rviz = LaunchConfiguration('start_lidar_rviz')
 
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')

@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
-
+cmake_minimum_required(VERSION 3.8)
 project(tf_interfaces)
 
 # Default to C++14
@@ -14,7 +13,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(vision_msgs REQUIRED)
-find_package(spark_common_interfaces REQUIRED)
 
 set(srv_files
   "srv/ImageClassification.srv"
@@ -23,7 +21,7 @@ set(srv_files
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${srv_files}
-  DEPENDENCIES sensor_msgs vision_msgs spark_common_interfaces
+  DEPENDENCIES sensor_msgs vision_msgs
   ADD_LINTER_TESTS
 )
 

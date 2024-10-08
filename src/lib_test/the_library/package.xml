@@ -4,7 +4,7 @@
   <name>the_library</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="salahsoliman96@gmail.com">salah</maintainer>
+  <maintainer email="litian.zhuang@nxrobo.com">salah</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

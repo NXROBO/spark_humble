@@ -35,7 +35,16 @@ def generate_launch_description():
     # Create the launch configuration variables
 
     dp_rgist = LaunchConfiguration('dp_rgist')   
-    start_camera_rviz = LaunchConfiguration('start_camera_rviz')   
+    enable_rgbd = LaunchConfiguration('enable_rgbd')  
+    pointcloud_enable = LaunchConfiguration('pointcloud.enable')
+    enable_depth = LaunchConfiguration('enable_depth')
+    enable_color = LaunchConfiguration('enable_color')
+    align_depth_enable = LaunchConfiguration('align_depth.enable')
+    enable_sync = LaunchConfiguration('enable_sync')
+    serial_no = LaunchConfiguration('serial_no')   
+    camera_namespace = LaunchConfiguration('camera_namespace') 
+    camera_name = LaunchConfiguration('camera_name') 
+
     #remappings = [('/camera/depth/points', '/camera/depth_registered/points')]
 
     stdout_linebuf_envvar = SetEnvironmentVariable(
@@ -46,19 +55,76 @@ def generate_launch_description():
         default_value='false',
         choices=['true', 'false'],
         description='Whether to run dp_rgist')
-        
-    declare_star_d435_rviz = DeclareLaunchArgument(
-        'start_camera_rviz', 
-        default_value='false',
+
+    declare_enable_rgbd = DeclareLaunchArgument(
+        'enable_rgbd', 
+        default_value='true',
         choices=['true', 'false'],
-        description='Whether to run start_camera_rviz')
+        description='Whether to run enable_rgbd')
+
+
+    declare_pointcloud_enable = DeclareLaunchArgument(
+        'pointcloud.enable', 
+        default_value='true',
+        choices=['true', 'false'],
+        description='Whether to run pointcloud.enable')
+
+    declare_enable_depth = DeclareLaunchArgument(
+        'enable_depth', 
+        default_value='true',
+        choices=['true', 'false'],
+        description='Whether to run enable_depth')
+                
+    declare_enable_color = DeclareLaunchArgument(
+        'enable_color', 
+        default_value='true',
+        choices=['true', 'false'],
+        description='Whether to run enable_color')
         
+    declare_align_depth_enable = DeclareLaunchArgument(
+        'align_depth.enable', 
+        default_value='true',
+        choices=['true', 'false'],
+        description='Whether to run align_depth.enable')
+
+    declare_enable_sync = DeclareLaunchArgument(
+        'enable_sync', 
+        default_value='true',
+        choices=['true', 'false'],
+        description='Whether to run enable_sync')            
+
+    declare_serial_no = DeclareLaunchArgument(
+        'serial_no', 
+        default_value="''",   # 243522071475
+        # choices=["'243522071475'", "'135122073920'"],
+        description='d435 camera serial number')
+
+    declare_camera_namespace = DeclareLaunchArgument(
+        'camera_namespace', 
+        default_value='',   # 'camera'
+        description='d435 camera namespace')
+
+    declare_camera_name = DeclareLaunchArgument(
+        'camera_name', 
+        default_value='camera',   
+        description='d435 camera name')
+
+
     # Specify the actions
     d435_camera_group = GroupAction([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(realsense2_camera_dir, 'launch',
-                                                       'd435_launch.py')),
-            launch_arguments={'start_camera_rviz': start_camera_rviz}.items()),
+                                                       'rs_launch.py')),
+            launch_arguments={'enable_rgbd': enable_rgbd,
+                                'pointcloud.enable': pointcloud_enable,
+                                'enable_depth': enable_depth,
+                                'enable_color': enable_color,
+                                'align_depth.enable': align_depth_enable,
+                                'enable_sync': enable_sync,
+                                'camera_namespace': camera_namespace,
+                                'camera_name': camera_name,
+                                'serial_no': serial_no, # 243522071475, 135122073920
+                                }.items()),
     ])
 
 
@@ -69,10 +135,17 @@ def generate_launch_description():
     ld.add_action(stdout_linebuf_envvar)
 
     # Declare the launch options
-    ld.add_action(declare_star_d435_rviz)
     ld.add_action(declare_dp_rgist)
-    ld.add_action(declare_dp_rgist)
-    
+    ld.add_action(declare_enable_rgbd)
+    ld.add_action(declare_pointcloud_enable)
+    ld.add_action(declare_enable_depth)
+    ld.add_action(declare_enable_color)
+    ld.add_action(declare_align_depth_enable)
+    ld.add_action(declare_enable_sync)
+    ld.add_action(declare_serial_no)
+    ld.add_action(declare_camera_namespace)
+    ld.add_action(declare_camera_name)
+
     # Add the actions to launch all of the navigation nodes
     ld.add_action(d435_camera_group)
 

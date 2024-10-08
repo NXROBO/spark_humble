@@ -14,7 +14,7 @@ def generate_launch_description():
     parameters={
           'frame_id':'base_footprint',
           'use_sim_time':use_sim_time,
-          'subscribe_depth':True,
+          'subscribe_rgbd':True,
           'subscribe_scan':True,
           'use_action_for_goal':True,
           'qos_scan':qos,
@@ -32,7 +32,7 @@ def generate_launch_description():
           ('rgb/image', '/camera/color/image_raw'),
           ('rgb/camera_info', '/camera/color/camera_info'),
           ('depth/image', '/camera/aligned_depth_to_color/image_raw')]
-
+          
     return LaunchDescription([
 
         # Launch arguments
@@ -50,14 +50,14 @@ def generate_launch_description():
 
         # Nodes to launch
         Node(
-            package='rtabmap_ros', executable='rgbd_sync', output='screen',
+            package='rtabmap_sync', executable='rgbd_sync', output='screen',
             parameters=[{'approx_sync':False, 'use_sim_time':use_sim_time, 'qos':qos}],
             remappings=remappings),
 
         # SLAM Mode:
         Node(
             condition=UnlessCondition(localization),
-            package='rtabmap_ros', executable='rtabmap', output='screen',
+            package='rtabmap_slam', executable='rtabmap', output='screen',
             parameters=[parameters],
             remappings=remappings,
             arguments=['-d']),
@@ -65,10 +65,14 @@ def generate_launch_description():
         # Localization mode:
         Node(
             condition=IfCondition(localization),
-            package='rtabmap_ros', executable='rtabmap', output='screen',
+            package='rtabmap_slam', executable='rtabmap', output='screen',
             parameters=[parameters,
               {'Mem/IncrementalMemory':'False',
                'Mem/InitWMWithAllNodes':'True'}],
             remappings=remappings),
 
+        # Node(
+        #     package='rtabmap_viz', executable='rtabmap_viz', output='screen',
+        #     parameters=[parameters],
+        #     remappings=remappings),
     ])

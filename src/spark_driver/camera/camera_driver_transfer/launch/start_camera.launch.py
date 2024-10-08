@@ -28,6 +28,7 @@ from launch.conditions import IfCondition, LaunchConfigurationEquals
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node, PushRosNamespace
+from colorama import init, Fore, Style  
 
 #摄像头列表字典
 camera_type_dict = {"2bc5:0403": "astrapro", "2bc5:0401": "astra", "8086:0b07": "d435"}
@@ -42,15 +43,15 @@ def execCmd(cmd):
 #执行命令行，返回输出值  
 def get_camera_type():
     for i in camera_type_dict:
-        print(i, camera_type_dict[i])
+        # print(i, camera_type_dict[i])
         cmd = "lsusb -d " + i
-        print(cmd)
+        # print(cmd)
         result = execCmd(cmd)
 
         if len(result) !=0:
-            print("check camera is ",camera_type_dict[i])
+            print(Fore.YELLOW + "camera is " + Style.RESET_ALL + Fore.GREEN + camera_type_dict[i] + Style.RESET_ALL)  #
             return camera_type_dict[i]
-    print("can not find camera,set d435 as default!")
+    print(Fore.RED + "ERROR: can not find camera,set d435 as default!" + Style.RESET_ALL)
     return "d435"    
 
 

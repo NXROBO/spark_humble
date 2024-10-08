@@ -23,19 +23,32 @@ from sensor_msgs.msg import Image as ImageMsg
 from tf_detection_py.detection_models import create as create_detection_model
 from tf_interfaces.srv import ImageDetection as ImageDetectionSrv
 from vision_msgs.msg import Detection2D, Detection2DArray, ObjectHypothesisWithPose
-
+import cv2
+from cv_bridge import CvBridge,CvBridgeError
+import time
+import datetime
 
 class DetectionNode(TensorflowNode):
 
     def __init__(self, tf_model, node_name, republish_image=True):
         super().__init__(node_name)
+        global detect_cnt
+        global last_detect_cnt
+        global lasttime
+        global diff_time
 
+        lasttime = 0
+        diff_time = 0
+
+        detect_cnt = 0
+        last_detect_cnt = 0
         self.republish_image = republish_image
         # ROS parameters
         self.min_score_thresh_p = self.declare_parameter('min_score_thresh', 0.5)
         # Default disabled, use values smaller than 1 to enable
         self.ioa_thresh_p = self.declare_parameter('ioa_thresh', 1.0)
         self.input_topic_p = self.declare_parameter('input_topic', 'image')
+        self.bridge = CvBridge()
 
         # Prepare the Tensorflow network
         self.startup(tf_model)
@@ -138,6 +151,10 @@ class DetectionNode(TensorflowNode):
     def create_image_msg_with_detections(self, image_np, output_dict):
         # Visualization of the results of a detection.
         # NOTE: this method modifies the provided image
+        global lasttime
+        global detect_cnt
+        global last_detect_cnt
+        global diff_time
         vis_util.visualize_boxes_and_labels_on_image_array(
                 image_np,
                 output_dict['detection_boxes'],
@@ -148,6 +165,25 @@ class DetectionNode(TensorflowNode):
                 use_normalized_coordinates=True,
                 min_score_thresh=self.min_score_thresh_p.value,
                 line_thickness=8)
+    # # ��ͼ��������֡���ı�  
+    #     cv2.putText(image_np, f'FPS: {fps:.2f}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX,  
+    #                 1, (255, 0, 0), 2, cv2.LINE_AA)  # �����Ͻǻ���֡��  
+
+    #     return img_utils.image_np_to_image_msg(image_np)  
+    
+        nowtime = time.time()
+        nt = int(round(nowtime * 1000))
+        detect_cnt = detect_cnt + 1
+        if(nt-lasttime > 1000):
+            lasttime = nt
+            diff_time = detect_cnt - last_detect_cnt
+            last_detect_cnt = detect_cnt
+            print(diff_time)
+
+        
+        fps = diff_time
+        cv2.putText(image_np, f'FPS: {int(fps)}', (20,50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+
 
         img_msg = img_utils.image_np_to_image_msg(image_np)
         return img_msg
@@ -185,8 +221,6 @@ class DetectionNode(TensorflowNode):
                     int(box[0]*img_height):int(box[2]*img_height),
                     int(box[1]*img_width):int(box[3]*img_width)]
 
-                #det.source_img = img_utils.image_np_to_image_msg(box_img)
-
             detections.detections.append(det)
 
         return detections
@@ -217,3 +251,10 @@ class DetectionNode(TensorflowNode):
         if (self.republish_image):
             img_msg = self.create_image_msg_with_detections(image_np, output_dict)
             self.image_pub.publish(img_msg)
+            cv_image1 = CvBridge().imgmsg_to_cv2(img_msg, "bgr8")
+            # 设置显示窗口的名称和大小
+            cv2.namedWindow('Object Detect', cv2.WINDOW_NORMAL)  # 使用cv2.WINDOW_NORMAL标志可以调整窗口大小
+            cv2.resizeWindow('Object Detect', 800, 600)  # 设置窗口大小为800x600像素
+            cv2.imshow('Object Detect', cv_image1)
+            cv2.setWindowProperty('Object Detect', cv2.WND_PROP_TOPMOST, 1)  #on top
+            cv2.waitKey(1)  

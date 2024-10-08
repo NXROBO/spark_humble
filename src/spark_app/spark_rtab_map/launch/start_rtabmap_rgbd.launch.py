@@ -32,8 +32,8 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     nav2_launch_file_dir = get_package_share_directory('nav2_bringup')
 
-    spark_rtab_map_dir = get_package_share_directory('spark_rtab_map')
-    spark_bringup_dir = get_package_share_directory('spark_bringup')
+    leo_rtab_map_dir = get_package_share_directory('leo_rtab_map')
+    leo_bringup_dir = get_package_share_directory('leo_bringup')
     # Create the launch configuration variables
     serial_port = LaunchConfiguration('serial_port')
     enable_arm_tel = LaunchConfiguration('enable_arm_tel')
@@ -48,8 +48,8 @@ def generate_launch_description():
     start_slam_rviz = LaunchConfiguration('start_slam_rviz')   
     localization = LaunchConfiguration('localization')
 
-    rviz_config_dir = os.path.join(get_package_share_directory('spark_rtab_map'),
-                                   'rviz', 'spark_rtabmap.rviz')
+    rviz_config_dir = os.path.join(get_package_share_directory('leo_rtab_map'),
+                                   'rviz', 'leo_rtabmap.rviz')
     declare_localization = DeclareLaunchArgument(
         'localization', default_value='false',
         description='Launch in localization mode.')
@@ -59,8 +59,8 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true')
     declare_serial_port = DeclareLaunchArgument(
         'serial_port', 
-        default_value='/dev/sparkBase',
-        description='serial port name:/dev/sparkBase or /dev/ttyUSBx')
+        default_value='/dev/LeoBase',
+        description='serial port name:/dev/LeoBase or /dev/ttyUSBx')
     declare_enable_arm_tel = DeclareLaunchArgument(
         'enable_arm_tel', 
         default_value='false',
@@ -115,7 +115,7 @@ def generate_launch_description():
     # Specify the group
     driver_bringup_group = GroupAction([
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(spark_bringup_dir, 'launch',
+            PythonLaunchDescriptionSource(os.path.join(leo_bringup_dir, 'launch',
                                                        'driver_bringup.launch.py')),
             launch_arguments={'serial_port': serial_port,
                               'enable_arm_tel': enable_arm_tel,
@@ -131,9 +131,9 @@ def generate_launch_description():
     map_nav_group = GroupAction([
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(spark_rtab_map_dir, 'launch',
-                                                       'spark_rtabmap_rgbd.launch.py')),
-            #                                           'spark_rgbd_sync.launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(leo_rtab_map_dir, 'launch',
+                                                       'leo_rtabmap_rgbd.launch.py')),
+            #                                           'leo_rgbd_sync.launch.py')),
             launch_arguments={'localization': localization,}.items()
         ),
         IncludeLaunchDescription(
@@ -142,15 +142,15 @@ def generate_launch_description():
         ),
     ])
  
-    spark_teleop_node = launch_ros.actions.Node(
-        package='spark_teleop',
+    leo_teleop_node = launch_ros.actions.Node(
+        package='leo_teleop',
         executable='keyboard_control.sh',  
         output='screen',
         emulate_tty=True,
         )
 
 
-    spark_map_nav_rviz_node = launch_ros.actions.Node(
+    leo_map_nav_rviz_node = launch_ros.actions.Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
@@ -160,8 +160,8 @@ def generate_launch_description():
         condition=IfCondition(start_slam_rviz),
         )
 
-    spark_delay_map_nav_action = TimerAction(period=5.0, actions=[map_nav_group])
-    #spark_delay_save_map_action = TimerAction(period=10.0, actions=[spark_save_map_node])
+    leo_delay_map_nav_action = TimerAction(period=5.0, actions=[map_nav_group])
+    #leo_delay_save_map_action = TimerAction(period=10.0, actions=[leo_save_map_node])
 
     # Create the launch description and populate
     ld = LaunchDescription()
@@ -180,8 +180,8 @@ def generate_launch_description():
     ld.add_action(declare_localization)
 
     ld.add_action(driver_bringup_group)
-    ld.add_action(spark_teleop_node)
-    ld.add_action(spark_map_nav_rviz_node)
-    ld.add_action(spark_delay_map_nav_action)
-    #ld.add_action(spark_delay_save_map_action)
+    ld.add_action(leo_teleop_node)
+    ld.add_action(leo_map_nav_rviz_node)
+    ld.add_action(leo_delay_map_nav_action)
+    #ld.add_action(leo_delay_save_map_action)
     return ld

@@ -26,7 +26,7 @@ import launch_ros.actions
 from launch_ros.actions import Node
 from launch.conditions import IfCondition
 from launch.actions import TimerAction
-os.system("export PYTHONPATH=$PYTHONPATH:/home/spark/models/research && cd /home/spark/models/research && protoc object_detection/protos/*.proto --python_out=.")
+# os.system("export PYTHONPATH=$PYTHONPATH:/home/spark/models/research && cd /home/spark/models/research && protoc object_detection/protos/*.proto --python_out=.")
 def generate_launch_description():
     # Get the launch directory
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
