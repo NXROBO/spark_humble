@@ -458,7 +458,9 @@ spark_build_map_2d(){
 
 spark_test_mode(){
 	PROJECTPATH=$(cd `dirname $0`; pwd)
-	source ${PROJECTPATH}/devel/setup.bash	
+	ROSVER=`/usr/bin/rosversion -d`
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/install/setup.bash
 	echo -e "${Info}老化测试程序，请将机器人放在一个50X50CM的方格中间进行测试，请选择：
 	1.执行5分钟的检测功能；
         2.执行老化检测功能，直至断电。"
@@ -466,10 +468,12 @@ spark_test_mode(){
 	echo && stty erase ^? && read -p "请选择 1 或 2 ：" chnum
  	case "$chnum" in
 		1)
-		roslaunch spark_test all_run_test_st.launch camera_type_tel:=${CAMERATYPE}	
+		print_command "ros2 launch spark_test spark_test_five_minute.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
+		ros2 launch spark_test spark_test_five_minute.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 		;;
 		2)
-		roslaunch spark_test all_run_test.launch camera_type_tel:=${CAMERATYPE}	
+		print_command "ros2 launch spark_test spark_test_aging.launch.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
+		ros2 launch spark_test spark_test_aging.launch.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 		;;
 		*)
 		echo -e "${Error} 退出!"	
