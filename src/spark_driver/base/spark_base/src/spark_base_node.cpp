@@ -21,10 +21,10 @@ using namespace NxSparkBase;
 
 int main(int argc, char **argv)
 {
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<SparkBaseDriver>("/dev/sparkBase"));
-  rclcpp::Rate rate(100);
-  rate.sleep();
-  rclcpp::shutdown();
-  return 0;
+	rclcpp::init(argc, argv);
+	rclcpp::spin(std::make_shared<SparkBaseDriver>("/dev/sparkBase"));
+	rclcpp::Rate rate(100);
+	rate.sleep();
+	rclcpp::shutdown();
+	return 0;
 }
