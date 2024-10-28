@@ -76,13 +76,10 @@ check_lidar(){
 	elif [[ "${TYPE_LIDAR}" == "ydlidar_g2" ]]; then
 		LIDARTYPE="ydlidar_g2"
 		touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
-	elif [[ "${TYPE_LIDAR}" == "3iroboticslidar2" ]]; then
-		LIDARTYPE="3iroboticslidar2"
-		touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
 	else
-		echo "暂不支持的雷达：${TYPE_LIDAR}，使用默认的杉川雷达运行"
-		LIDARTYPE="3iroboticslidar2"
-		touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE	
+		echo "暂不支持的雷达：${TYPE_LIDAR}，使用默认的EAI-G6雷达运行"
+		LIDARTYPE="ydlidar_g6"
+		rm -f ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
 	fi
 	lidar_flag=0
 
@@ -174,13 +171,17 @@ check_camera(){
 
 }
 
-
+#清除所有ROS节点。
+killall_ros_nodes(){
+	print_command "Kill all ros nodes!"
+	ps aux | grep ros | grep -v grep | awk '{ print "kill -9", $2 }' | sh
+	exit 0
+}
 
 #编译SPARK
 install_spark(){
 	source /opt/ros/${ROS_Ver}/setup.bash
-	catkin_make
-	#catkin_make install
+	colcon build
 }
 
 
@@ -651,6 +652,7 @@ echo -e "
 ————————————
 
   ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
+  ${Green_font_prefix}101.${Font_color_suffix} 清除所有ROS节点
   ${Green_font_prefix}104.${Font_color_suffix} 文件传输
  "
 menu_status
@@ -692,6 +694,9 @@ case "$num" in
 	;;
 	100)
 	tell_us
+	;;
+	101)
+	killall_ros_nodes
 	;;
 	104)
 	qrcode_transfer_files
