@@ -156,7 +156,7 @@ def generate_launch_description():
     ld.add_action(declare_start_bringup_rviz)
     ld.add_action(declare_start_navigation_rviz)
     ld.add_action(navigation_group)
-    ld.add_action(spark_delay_slam_action)
+    #ld.add_action(spark_delay_slam_action)
     #ld.add_action(spark_teleop_node)
 
     return ld
