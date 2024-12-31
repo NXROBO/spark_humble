@@ -53,14 +53,14 @@ public:
     {
       if (this->now().seconds() - prev_sec < sec)
       {
-        testTurnBody(0, 1);
+        testTurnBody(0, 2);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         onoff.status = 1;
         pump_pub->publish(onoff);
       }
       else if (this->now().seconds() - prev_sec > sec && this->now().seconds() - prev_sec < 20)
       {
-        testTurnBody(0, -1);
+        testTurnBody(0, -2);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         pos.x = 120;
         pos.y = 0;

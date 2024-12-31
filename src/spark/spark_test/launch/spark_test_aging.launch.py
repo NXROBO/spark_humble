@@ -30,6 +30,7 @@ def generate_launch_description():
     # Get the launch directory
     spark_teleop_dir = get_package_share_directory('spark_teleop')
     spark_bringup_dir = get_package_share_directory('spark_bringup')
+    spark_yolov8_dir = get_package_share_directory('spark_yolov8')
     swiftpro_driver_dir = get_package_share_directory('swiftpro')
 
     # Create the launch configuration variables
@@ -44,6 +45,7 @@ def generate_launch_description():
     dp_rgist = LaunchConfiguration('dp_rgist')   
     rviz_config = LaunchConfiguration('rviz_config')   
     use_sim_time = False
+    start_bringup_rviz = LaunchConfiguration('start_bringup_rviz')   
 
     rviz_config_dir = os.path.join(get_package_share_directory('spark_slam_transfer'),
                                    'rviz', 'spark_slam.rviz')
@@ -58,7 +60,7 @@ def generate_launch_description():
         choices=['true', 'false'],
         description='Whether to run arm')
     declare_arm_type_tel = DeclareLaunchArgument(
-        'arm_type_tel', 
+        'arm_type_tel',
         default_value='uarm',
         description='arm name')
     declare_start_base = DeclareLaunchArgument(
@@ -95,24 +97,21 @@ def generate_launch_description():
         'rviz_config', 
         default_value='spark_base.rviz',
         description='rviz_config')  
-
+    declare_start_bringup_rviz = DeclareLaunchArgument(
+        'start_bringup_rviz', 
+        default_value='false',
+        choices=['true', 'false'],
+        description='Whether to start_bringup_rviz')    
    
     # Specify the actions
     camera_group = GroupAction([
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(spark_bringup_dir, 'launch',
-                                                       'driver_bringup.launch.py')),
-            launch_arguments={'serial_port': serial_port,
-                              'enable_arm_tel': enable_arm_tel,
-                              'arm_type_tel': arm_type_tel,
-                              'start_base' : start_base,
-                              'start_camera': start_camera,
-							  'start_lidar': start_lidar,
-                              'camera_type_tel' : camera_type_tel,
-                              'lidar_type_tel': lidar_type_tel,
-							  'dp_rgist': dp_rgist,
-                              'rviz_config' : rviz_config,}.items()),
 
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(spark_yolov8_dir, 'launch', 'spark_yolo_object.launch.py')),
+            launch_arguments={'camera_type_tel' : camera_type_tel,
+                              'lidar_type_tel': lidar_type_tel,}.items()),
+            
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(swiftpro_driver_dir, 'launch',
                                                        'pro_control_nomoveit.launch.py')),
@@ -131,19 +130,13 @@ def generate_launch_description():
         executable='spark_aging_test',  
         output='screen',
         )
-    
-    yolov8_pose_node = launch_ros.actions.Node(
-        package='spark_yolov8',
-        executable='camera_object',  
-        output='screen',
-        )
-
     gmapping_slam_node = launch_ros.actions.Node(
         package='slam_gmapping',
         executable='slam_gmapping',  
         output='screen',
         parameters=[{'use_sim_time':use_sim_time}]
         )
+
 
     spark_slam_rviz_node = launch_ros.actions.Node(
         package='rviz2',
@@ -166,10 +159,13 @@ def generate_launch_description():
     ld.add_action(declare_lidar_type_tel)
     ld.add_action(declare_dp_rgist)
     ld.add_action(declare_rviz_config)
+    ld.add_action(declare_start_bringup_rviz)
+    ld.add_action(gmapping_slam_node)    
     ld.add_action(camera_group)
     # ld.add_action(spark_teleop_node)
     ld.add_action(spark_test_node)
-    ld.add_action(yolov8_pose_node)
-    ld.add_action(gmapping_slam_node)
     ld.add_action(spark_slam_rviz_node)
     return ld
+
+
+    
