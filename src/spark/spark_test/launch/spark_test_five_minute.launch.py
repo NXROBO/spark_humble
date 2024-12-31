@@ -105,19 +105,7 @@ def generate_launch_description():
    
     # Specify the actions
     camera_group = GroupAction([
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(spark_bringup_dir, 'launch',
-                                                       'driver_bringup.launch.py')),
-            launch_arguments={'serial_port': serial_port,
-                              'enable_arm_tel': enable_arm_tel,
-                              'arm_type_tel': arm_type_tel,
-                              'start_base' : start_base,
-                              'start_camera': start_camera,
-							  'start_lidar': start_lidar,
-                              'camera_type_tel' : camera_type_tel,
-                              'lidar_type_tel': lidar_type_tel,
-							  'dp_rgist': dp_rgist,
-                              'start_bringup_rviz' : start_bringup_rviz,}.items()),
+
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(spark_yolov8_dir, 'launch', 'spark_yolo_object.launch.py')),

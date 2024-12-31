@@ -45,7 +45,7 @@ public:
 
     double prev_sec = current_time_sec;
     int sec = 10;
-    int test_time = 30;
+    int test_time = 300;
     rclcpp::Rate loop_rate(0.2);
     onoff.status = 1;
     pump_pub->publish(onoff);

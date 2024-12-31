@@ -473,8 +473,8 @@ spark_test_mode(){
 		ros2 launch spark_test spark_test_five_minute.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 		;;
 		2)
-		print_command "ros2 launch spark_test spark_test_aging.launch.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
-		ros2 launch spark_test spark_test_aging.launch.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
+		print_command "ros2 launch spark_test spark_test_aging.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
+		ros2 launch spark_test spark_test_aging.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 		;;
 		*)
 		echo -e "${Error} 退出!"	
