@@ -123,6 +123,7 @@ def generate_launch_description():
                                 'enable_sync': enable_sync,
                                 'camera_namespace': camera_namespace,
                                 'camera_name': camera_name,
+                                'publish_tf': "false",
                                 'serial_no': serial_no, # 243522071475, 135122073920
                                 }.items()),
     ])

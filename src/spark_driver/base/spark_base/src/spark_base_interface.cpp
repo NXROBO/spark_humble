@@ -152,13 +152,17 @@ int NxSparkBase::SparkBaseInterface::closeSerialPort()
 // Set the speeds
 int NxSparkBase::SparkBaseInterface::drive(double linear_speed, double angular_speed)
 {
-	// int left_speed_mm_s =
-	// (int)((linear_speed-SPARKBASE_AXLE_LENGTH*angular_speed/2)*1e3);		// Left
-	// wheel velocity in mm/s
-	// int right_speed_mm_s =
-	// (int)((linear_speed+SPARKBASE_AXLE_LENGTH*angular_speed/2)*1e3);	// Right
-	// wheel velocity in mm/s
-	// 调换了左右轮子的速度,使得半弧向后
+	//限制移动速度，超过0.3m/s可能引起走偏。
+	if(linear_speed > 0.3)
+	{
+		linear_speed = 0.3;
+		printf("warn: Speed limited to 0.3m/s\n");
+	}	
+	else if(linear_speed < -0.3)
+	{
+		linear_speed = -0.3;
+		printf("warn: Speed limited to -0.3m/s\n");
+	}	
 	int left_speed_mm_s =
 		(int)((linear_speed - SPARKBASE_AXLE_LENGTH * angular_speed / 2) * 1e3); // Left wheel velocity in mm/s
 	int right_speed_mm_s =
