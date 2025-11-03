@@ -2,8 +2,7 @@
 <img src="http://wiki.ros.org/Robots/Spark?action=AttachFile&do=get&target=spark1.png" width="300">
 
 ## 说明 Description
-- This is a tutorial for beginners, and Detailed version is [here](https://github.com/NXROBO/spark_humble/blob/master/README.md) . 
-- 本说明为初学者体验版，[这里](https://github.com/NXROBO/spark_humble/blob/master/README.md)有详细说明的版本。
+- 本程序只适用于NXROBO的SPARK机器人。其它机器人请访问[创想未来机器人的官网](https://www.nxrobo.com)
 
 ## 列表 Table of Contents
 
