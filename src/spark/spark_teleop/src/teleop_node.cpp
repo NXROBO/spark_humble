@@ -35,6 +35,7 @@
  *
  */
 
+#include <cstdlib>
 #include <termios.h>
 #include <signal.h>
 #include <math.h>
@@ -56,6 +57,12 @@
 #define KEYCODE_D 0x64
 #define KEYCODE_Q 113
 #define KEYCODE_E 101
+
+#define KEYCODE_UP_LINEAR 0x69 // i
+#define KEYCODE_DOWN_LINEAR 0x6B  // k
+#define KEYCODE_UP_ANGULAR 0x6C // l
+#define KEYCODE_DOWN_ANGULAR 0x6A // j
+
 /* 带有shift键 */
 #define KEYCODE_A_CAP 0x41
 #define KEYCODE_D_CAP 0x44
@@ -108,8 +115,8 @@ public:
   SmartCarKeyboardTeleop(float linear = 0.2, float angular = 0.4): Node("spark_teleop_node")
   {
     kfd = 0;
-    speed_linear_x = linear;
-    speed_angular_z = angular;
+    speed_linear_x = 0.2;
+    speed_angular_z = 0.4;
     pub_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);
     this->declare_parameter("walk_vel", 0.2);
     this->declare_parameter("yaw_rate", 1.0);
@@ -163,7 +170,23 @@ public:
     else
 	printf("           s后退");
     printf("\n");
+
+  printf("\n");
+  printf("请根据提示调整移动速度：\n");
+  printf("当前线速度:%.2f, 角速度:%.2f\n\n", speed_linear_x, speed_angular_z);
+
+	printf("           i加速");
+  printf("\n");
+  printf("\n");
+	printf("    j减转速     l加转速 ");    
+  printf("\n");
+  printf("\n");
+	printf("           k减速");
+  printf("\n");
+
+
   }
+
   void keyboardLoop()
   {
     char c;
@@ -216,6 +239,7 @@ public:
         {
           stopRobot();
           dirty = false;
+          system("clear");
           PrintfColour("STOP");
         }
         continue;
@@ -223,6 +247,49 @@ public:
       //printf("------------%d\n", c);
       switch (c)
       {
+
+        case KEYCODE_UP_LINEAR:
+          if (speed_linear_x < 0.5)
+          {
+            speed_linear_x = speed_linear_x + 0.05;    
+            speed = 0;
+            turn = 0;
+            dirty = true;
+            sparkbasebit = 1;
+          }
+          break;
+        case KEYCODE_DOWN_LINEAR:
+          if (speed_linear_x >= 0.1)
+          {
+            speed_linear_x = speed_linear_x - 0.05;   
+            speed = 0;
+            turn = 0;
+            dirty = true;
+            sparkbasebit = 1;            
+          }
+          break;
+
+        case KEYCODE_UP_ANGULAR:
+          if (speed_angular_z <= 2.0)
+          {
+            speed_angular_z = speed_angular_z + 0.1;
+            speed = 0;
+            turn = 0;
+            dirty = true;
+            sparkbasebit = 1;
+          }
+          break;
+        case KEYCODE_DOWN_ANGULAR:
+          if (speed_angular_z > 0.25)
+          {
+            speed_angular_z = speed_angular_z - 0.1;
+            speed = 0;
+            turn = 0;
+            dirty = true;
+            sparkbasebit = 1;            
+          }
+          break;
+
         case KEYCODE_W:
           max_speed_linear_x = speed_linear_x;
           speed = 1;
