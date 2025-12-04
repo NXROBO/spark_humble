@@ -24,9 +24,7 @@ class YoloDetection(Node):
 # 初始化函数，包括加载模型和创建订阅者
     def __init__(self):
         pt_path = sys.path[0]
-        print(pt_path)
-        print(pt_path + '/model/yolov8n.pt')
-        self.model = YOLO(pt_path + '/model/yolov8n.pt') 
+        self.model = YOLO(pt_path + '/model/yolov8n.pt')
         # 加载模型
         #model_path = os.path.join('/home/leo/leo_agv/src/leo_app/leo_yolov8/yolov8n.pt')  # 构造模型文件的绝对路径
         #self.model = YOLO(model_path)

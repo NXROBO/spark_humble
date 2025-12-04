@@ -19,15 +19,10 @@ from ultralytics import YOLO
 class YoloDetection(Node):
 # 初始化函数，包括加载模型和创建订阅者
     def __init__(self):
-        pt_path = sys.path[0]
-        print(pt_path)
-        print(pt_path + '/model/yolov8n.pt')
-        self.model = YOLO(pt_path + '/model/yolov8n-pose.pt') 
         # 加载模型
-        # model_path = os.path.join('/home/leo/leo_agv/src/leo_app/leo_yolov8/yolov8n-pose.pt') # 构造模型文件的绝对路径
-        # self.model = YOLO(model_path)
-        # self.model = YOLO("yolov8n-pose.pt")
-        
+        pt_path = sys.path[0]
+        self.model = YOLO(pt_path + '/model/yolov8n-pose.pt')
+      
         # 创建订阅者
         super().__init__('Yolo')
         # 创建日志记录器

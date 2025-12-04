@@ -145,11 +145,12 @@ def generate_launch_description():
 
 
     
-    yolov8_pose_node = launch_ros.actions.Node(
+    yolov8_predict_node = launch_ros.actions.Node(
         package='spark_yolov8',
-        executable='camera_object',  
+        # executable='camera_object',  
+        executable='camera_predict',  
         output='screen',
-        remappings =[('/input_image', '/camera/color/image_raw')],
+        # remappings =[('/input_image', '/camera/color/image_raw')],
         )
 
     spark_teleop_node = launch_ros.actions.Node(
@@ -186,7 +187,7 @@ def generate_launch_description():
     ld.add_action(declare_start_joy)
     ld.add_action(declare_start_bringup_rviz)
     ld.add_action(letitgo_group)
-    ld.add_action(yolov8_pose_node)
+    ld.add_action(yolov8_predict_node)
     ld.add_action(spark_teleop_node)
     ld.add_action(rviz_node)
     
