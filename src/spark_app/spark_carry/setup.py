@@ -14,7 +14,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name), glob('launch/*.launch.py')),
         (os.path.join('lib', package_name), glob('scripts/*.sh')),
-
+        (os.path.join('lib', package_name, 'resource'), glob('resource/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -29,6 +29,8 @@ setup(
             'cali_pos = spark_carry.cali_pos:main',
             'hsv_detection = spark_carry.hsv_detection:main',
             's_carry_object = spark_carry.s_carry_object:main',
+            'hsv_processor = spark_carry.hsv_processor:main',
+            'grasp_object = spark_carry.grasp_object:main',
 
         ],
     },

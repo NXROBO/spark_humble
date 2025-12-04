@@ -13,6 +13,7 @@
   <test_depend>python3-pytest</test_depend>
   <exec_depend>smach</exec_depend>
   <exec_depend>smach_ros</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
