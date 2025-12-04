@@ -387,18 +387,10 @@ spark_carry_obj(){
 	source ${PROJECTPATH}/install/setup.bash
 	echo -e "${Info}请选择移动的方式：
 	  ${Green_font_prefix}1.${Font_color_suffix} 固定位置移动
-	  ${Green_font_prefix}2.${Font_color_suffix} 手动地图指定位置导航(未完成。。)
-	  ${Green_font_prefix}3.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	  ${Green_font_prefix}2.${Font_color_suffix} 方块位置调换(A to B)
+	  ${Green_font_prefix}3.${Font_color_suffix} 手动地图指定位置导航(未完成。。)
+	  ${Green_font_prefix}4.${Font_color_suffix} 退出请输入：Ctrl + c" 
 	echo && stty erase ^? && read -p "请输入数字 [1]：" armnum
-	case "$armnum" in
-		1)
-		MOVETYPE="fix"
-		;;
-		*)
-		echo -e "${Error} 错误，默认使用固定位置移动"
-		MOVETYPE="fix"
-		;;
-	esac
 	echo -e "${Info}" 
 	echo -e "${Info}请确定："
 	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
@@ -407,8 +399,23 @@ spark_carry_obj(){
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
-	print_command "ros2 launch spark_carry spark_carry_object_fix.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
-	ros2 launch spark_carry spark_carry_object_fix.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
+	case "$armnum" in
+		1)
+		MOVETYPE="fix"
+		print_command "ros2 launch spark_carry spark_carry_object_fix.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
+		ros2 launch spark_carry spark_carry_object_fix.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
+		;;
+		2)
+		print_command "ros2 launch spark_carry spark_carry_object.launch.py"
+		ros2 launch spark_carry spark_carry_object.launch.py
+		;;
+		*)
+		echo -e "${Error} 错误，默认使用固定位置移动"
+		MOVETYPE="fix"
+		print_command "ros2 launch spark_carry spark_carry_object_fix.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}"
+		ros2 launch spark_carry spark_carry_object_fix.launch.py camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
+		;;
+	esac
 }
 
 #让SPARK使用激光雷达绘制地图(gmapping)
