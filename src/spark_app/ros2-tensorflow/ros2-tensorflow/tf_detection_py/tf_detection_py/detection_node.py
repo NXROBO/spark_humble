@@ -213,8 +213,8 @@ class DetectionNode(TensorflowNode):
             box = boxes[i]
             det.bbox.size_y = (box[2] - box[0]) * img_height
             det.bbox.size_x = (box[3] - box[1]) * img_width
-            det.bbox.center.position.x = (box[1] + box[3]) * img_height / 2
-            det.bbox.center.position.y = (box[0] + box[2]) * img_width / 2
+            det.bbox.center.position.x = (box[1] + box[3]) * img_width / 2
+            det.bbox.center.position.y = (box[0] + box[2]) * img_height / 2
 
             if (self.republish_image):
                 box_img = image_np[
